@@ -2,8 +2,8 @@
 
 set -e
 
-javac -d build "com/craftinginterpreters/lox/*.java"
-javac -d build "com/craftinginterpreters/tool/*.java"
+javac -d build com/craftinginterpreters/lox/*
+javac -d build com/craftinginterpreters/tool/*
 
 # Launch the interpreter:
 # cd build/
