@@ -7,4 +7,4 @@ javac -d build com/craftinginterpreters/tool/*
 
 # Launch the interpreter:
 # cd build/
-# java com/craftinginterpreters/lox/Lox
+# java com.craftinginterpreters.lox.Lox
