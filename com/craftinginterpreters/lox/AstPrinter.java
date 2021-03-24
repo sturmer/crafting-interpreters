@@ -29,7 +29,12 @@ class AstPrinter implements Expr.Visitor<String> {
 
   @Override
   public String visitVariableExpr(Expr.Variable expr) {
-    return "todo";
+    return "todo: variable";
+  }
+
+  @Override
+  public String visitAssignExpr(Expr.Assign expr) {
+    return "todo: assignment";
   }
 
   private String parenthesize(String name, Expr... exprs) {
