@@ -27,7 +27,9 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     if (expr.operator.type == TokenType.MINUS) {
       checkNumberOperand(expr.operator, right);
-      return -(double) right;
+      Object res = -(double) right;
+      System.out.println(stringify(res));
+      return res;
     } else if (expr.operator.type == TokenType.BANG) {
       return !isTruthy(right);
     }
@@ -129,6 +131,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     Object value = null;
     if (stmt.initializer != null) {
       value = evaluate(stmt.initializer);
+      System.out.println(stringify(value));
     }
 
     environment.define(stmt.name.lexeme, value);
@@ -139,17 +142,25 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   public Object visitAssignExpr(Expr.Assign expr) {
     Object value = evaluate(expr.value);
     environment.assign(expr.name, value);
+    System.out.println(stringify(value));
     return value;
   }
 
   public Object visitBinaryExpr(Expr.Binary expr) {
     Object left = evaluate(expr.left);
     Object right = evaluate(expr.right);
+    boolean booleanResult;
+    Double doubleResult;
+    String stringResult;
 
     switch (expr.operator.type) {
       case GREATER:
         checkNumberOperands(expr.operator, left, right);
-        return (double) left > (double) right;
+
+        // And do the same with the other exprs...
+        booleanResult = (double) left > (double) right;
+        System.out.println(booleanResult);
+        return booleanResult;
       case GREATER_EQUAL:
         checkNumberOperands(expr.operator, left, right);
         return (double) left >= (double) right;
@@ -164,11 +175,15 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return (double) left - (double) right;
       case PLUS:
         if (left instanceof Double && right instanceof Double) {
-          return (double) left + (double) right;
+          doubleResult = (double) left + (double) right;
+          System.out.println(doubleResult);
+          return doubleResult;
         }
 
         if (left instanceof String && right instanceof String) {
-          return (String) left + (String) right;
+          stringResult = (String) left + (String) right;
+          System.out.println(stringResult);
+          return stringResult;
         }
 
         throw new RuntimeError(
@@ -177,10 +192,14 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         );
       case SLASH:
         checkNumberOperands(expr.operator, left, right);
-        return (double) left / (double) right;
+        doubleResult = (double) left / (double) right;
+        System.out.println(doubleResult);
+        return doubleResult;
       case STAR:
         checkNumberOperands(expr.operator, left, right);
-        return (double) left * (double) right;
+        doubleResult = (double) left * (double) right;
+        System.out.println(doubleResult);
+        return doubleResult;
       case BANG_EQUAL:
         return !isEqual(left, right);
       case EQUAL_EQUAL:
