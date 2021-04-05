@@ -25,11 +25,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   public Object visitUnaryExpr(Expr.Unary expr) {
     Object right = evaluate(expr.right);
 
-    if (expr.operator.type == TokenType.MINUS) {
-      checkNumberOperand(expr.operator, right);
-      return -(double) right;
-    } else if (expr.operator.type == TokenType.BANG) {
-      return !isTruthy(right);
+    switch (expr.operator.type) {
+      case MINUS:
+        checkNumberOperand(expr.operator, right);
+        return -(double) right;
+      case BANG:
+        return !isTruthy(right);
     }
 
     // Unreachable
@@ -71,6 +72,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     if (object instanceof Double) {
       String text = object.toString();
       if (text.endsWith(".0")) {
+        // NOTE(gian): Does this work? I seem to see the .0 printed :thinking:
         text = text.substring(0, text.length() - 2);
       }
       return text;
@@ -169,6 +171,14 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
         if (left instanceof String && right instanceof String) {
           return (String) left + (String) right;
+        }
+
+        if (left instanceof String && right instanceof Double) {
+          return (String)left + stringify(right);
+        }
+
+        if (left instanceof Double && right instanceof String) {
+          return stringify(left) + (String)right;
         }
 
         throw new RuntimeError(
