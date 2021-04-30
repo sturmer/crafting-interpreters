@@ -5,8 +5,21 @@ Code to follow along Bob Nystrom's book [Crafting Interpreters](http://www.craft
 ## Launch the interpreter:
 
 ```
-cd build/
-java com.craftinginterpreters.lox.Lox
+> cd build/
+> java com.craftinginterpreters.lox.Lox
+> print 3 + 1;
+4
+>
+```
+
+## Execute a script:
+
+```
+> cd build/
+> java com.craftinginterpreters.lox.Lox ../script.lox
+one
+true
+3
 ```
 
 ## Generate the AST
