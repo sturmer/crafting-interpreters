@@ -22,6 +22,12 @@ class AstPrinter implements Expr.Visitor<String> {
   }
 
   @Override
+  public String visitCallExpr(Expr.Call expr) {
+    // long, but could do String.join(", ", expr.arguments) - but need to extract string from each arg...
+    return parenthesize("call", expr.callee);
+  }
+
+  @Override
   public String visitLiteralExpr(Expr.Literal expr) {
     if (expr.value == null) return "nil";
     return expr.value.toString();
