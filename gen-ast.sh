@@ -1,6 +1,6 @@
 #!/bin/bash
 
-./compile.sh
+./cc
 cd build
 java com.craftinginterpreters.tool.GenerateAst ../com/craftinginterpreters/lox/
 cd -

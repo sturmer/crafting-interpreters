@@ -9,18 +9,25 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   private Environment environment = globals;
 
   Interpreter() {
-    globals.define("clock", new LoxCallable() {
-      @Override
-      public int arity() { return 0; }
+    globals.define(
+      "clock",
+      new LoxCallable() {
+        @Override
+        public int arity() {
+          return 0;
+        }
 
-      @Override
-      public Object call(Interpreter interpreter, List<Object> arguments) {
-        return (double)System.currentTimeMillis() / 1000.0;
+        @Override
+        public Object call(Interpreter interpreter, List<Object> arguments) {
+          return (double) System.currentTimeMillis() / 1000.0;
+        }
+
+        @Override
+        public String toString() {
+          return "<native fn>";
+        }
       }
-
-      @Override
-      public String toString() { return "<native fn>"; }
-    });
+    );
   }
 
   void interpret(List<Stmt> statements) {
@@ -150,6 +157,13 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   }
 
   @Override
+  public Void visitFunctionStmt(Stmt.Function stmt) {
+    LoxFunction function = new LoxFunction(stmt);
+    environment.define(stmt.name.lexeme, function);
+    return null;
+  }
+
+  @Override
   public Void visitIfStmt(Stmt.If stmt) {
     if (isTruthy(evaluate(stmt.condition))) {
       execute(stmt.thenBranch);
@@ -222,11 +236,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
 
         if (left instanceof String && right instanceof Double) {
-          return (String)left + stringify(right);
+          return (String) left + stringify(right);
         }
 
         if (left instanceof Double && right instanceof String) {
-          return stringify(left) + (String)right;
+          return stringify(left) + (String) right;
         }
 
         throw new RuntimeError(
@@ -258,13 +272,21 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     if (!(callee instanceof LoxCallable)) {
-      throw new RuntimeError(expr.paren, "Can only call functions and classes.");
+      throw new RuntimeError(
+        expr.paren,
+        "Can only call functions and classes."
+      );
     }
-    LoxCallable function = (LoxCallable)callee;
+    LoxCallable function = (LoxCallable) callee;
     if (arguments.size() != function.arity()) {
-      throw new RuntimeError(expr.paren, "Expected " +
-        function.arity() + " arguments but got " +
-        arguments.size() + ".");
+      throw new RuntimeError(
+        expr.paren,
+        "Expected " +
+        function.arity() +
+        " arguments but got " +
+        arguments.size() +
+        "."
+      );
     }
     return function.call(this, arguments);
   }
