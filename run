@@ -1,4 +1,5 @@
 #!/bin/bash
+# Test every script by just running: `for i in $(ls scripts/); do ./run scripts/$i; done`
 
 cd build
 java com.craftinginterpreters.lox.Lox ../$1
